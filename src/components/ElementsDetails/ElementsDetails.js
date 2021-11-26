@@ -1,27 +1,34 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 
-function ElementsDetails(props) {
+function ElementsDetails() {
     const { id, element } = useParams();
+
     const [hero, setHero] = useState([]);
     const [monster, setMonster] = useState([]);
     // const [equipement, setEquipement] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const fetchOneElement = async (elementID, element) => {
+    /**
+     * Selection for one entity
+     * @param {string} entityID
+     * @param {string} entity Type of entity
+     */
+    const getOneEntity = async (entityID, entity) => {
         setLoading(true);
-        await fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${element}/${elementID}`, {
+        await fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${entity}/${entityID}`, {
             method: "GET",
         })
             .then((res) => res.json())
             .then(
                 (jsonData) =>
-                    element === "heroes"
+                    entity === "heroes"
                         ? setHero(jsonData)
-                        : element === "monsters"
+                        : entity === "monsters"
                         ? setMonster(jsonData)
                         : ""
-                // : element === "equipements"
+                // : entity === "equipements"
                 // ? setEquipement(jsonData)
                 // : ""
             )
@@ -29,8 +36,8 @@ function ElementsDetails(props) {
     };
 
     useEffect(() => {
-        fetchOneElement(id, element);
-    }, [element, id]);
+        getOneEntity(id, element);
+    }, [id, element]);
 
     const DisplayData = (props) => {
         let hme;
@@ -50,7 +57,7 @@ function ElementsDetails(props) {
                 break;
         }
 
-        if (hme.stats === undefined && hme.capacite === undefined) {
+        if (hme.stats === undefined || hme.capacite === undefined) {
             return (
                 <>
                     <li>{hme.image}</li>
@@ -100,6 +107,8 @@ function ElementsDetails(props) {
             <ul>
                 <DisplayData element={element} />
             </ul>
+            <Link to={`/characters-builder/${element}/${id}/update`}>Modifier</Link>
+            <Link to={`/characters-builder/${element}/${id}/delete`}>Supression</Link>
         </>
     );
 }

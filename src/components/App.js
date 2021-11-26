@@ -1,31 +1,42 @@
 import "./App.css";
+
 import { Route, Routes } from "react-router";
-import DataManager from "./DataManager/DataManager";
-import GameTitle from "./GameTitle/GameTitle";
 import { useEffect, useState } from "react";
-import ElementsDetails from "./ElementsDetails/ElementsDetails";
 import { Link } from "react-router-dom";
 
+import DataManager from "./DataManager/DataManager";
+import GameTitle from "./GameTitle/GameTitle";
+import ElementsDetails from "./ElementsDetails/ElementsDetails";
+import DeleteData from "./DeleteData/DeleteData";
+import CreateData from "./CreateData/CreateData";
+import ModificationData from "./ModificationData/ModificationData";
+
 function App() {
+    /* --- State of entities list --- */
     const [heroes, setHeroes] = useState([]);
     const [monsters, setMonsters] = useState([]);
     // const [equipements, setEquipements] = useState([]);
+
     const [loading, setLoading] = useState(false);
 
-    const fetchGetAllElements = async (element) => {
+    /**
+     * Get the entities list
+     * @param {string} entity Type of entity
+     */
+    const getAllEntities = async (entity) => {
         setLoading(true);
-        await fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${element}`, {
+        await fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${entity}`, {
             method: "GET",
         })
             .then((res) => res.json())
             .then(
                 (jsonData) =>
-                    element === "heroes"
+                    entity === "heroes"
                         ? setHeroes(jsonData)
-                        : element === "monsters"
+                        : entity === "monsters"
                         ? setMonsters(jsonData)
                         : ""
-                // : element === "equipements"
+                // : entity === "equipements"
                 // ? setEquipements(jsonData)
                 // : ""
             )
@@ -33,9 +44,9 @@ function App() {
     };
 
     useEffect(() => {
-        fetchGetAllElements("heroes");
-        fetchGetAllElements("monsters");
-        // fetchGetAllElements("equipements");
+        getAllEntities("heroes");
+        getAllEntities("monsters");
+        // getAllEntitiess("equipements");
     }, []);
 
     if (loading) {
@@ -63,7 +74,16 @@ function App() {
                         />
                     }
                 />
+                <Route path="/characters-builder/:element/create" element={<CreateData />} />
                 <Route path="/characters-builder/:element/:id" element={<ElementsDetails />} />
+                <Route
+                    path="/characters-builder/:element/:id/update"
+                    element={<ModificationData />}
+                />
+                <Route
+                    path="/characters-builder/:element/:id/delete"
+                    element={<DeleteData setHeroes={setHeroes} />}
+                />
             </Routes>
         </>
     );

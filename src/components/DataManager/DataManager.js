@@ -25,13 +25,21 @@ const ElementList = (props) => {
                     <p>Défense : {e.stats.defense}</p>
                     <p>Chance : {e.stats.chance}</p>
                     <Link to={`/characters-builder/${props.elementType}/${e._id}`}>Details</Link>
+                    <Link to={`/characters-builder/${props.elementType}/${e._id}/update`}>
+                        Modifier
+                    </Link>
+                    <Link to={`/characters-builder/${props.elementType}/${e._id}/delete`}>
+                        Supression
+                    </Link>
                 </div>
             ))}
+            <Link to={`/characters-builder/${props.elementType}/create`}>Create</Link>
         </div>
     );
 };
 
 function DataManager(props) {
+    console.log(props);
     return (
         <>
             <ElementList getElement={props.getHeroes} elementType="heroes" />
