@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-function DeleteData(props) {
+function DeleteData() {
     const { id, element } = useParams();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -21,8 +21,6 @@ function DeleteData(props) {
     useEffect(() => {
         deleteEntity(id, element);
     }, [id, element]);
-
-    console.log(props);
 
     if (loading) {
         return (

@@ -1,5 +1,6 @@
 import "./DataManager.css";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const ElementList = (props) => {
     return (
@@ -39,11 +40,55 @@ const ElementList = (props) => {
 };
 
 function DataManager(props) {
-    console.log(props);
+    /* --- State of entities list --- */
+    const [heroes, setHeroes] = useState([]);
+    const [monsters, setMonsters] = useState([]);
+    // const [equipements, setEquipements] = useState([]);
+
+    const [loading, setLoading] = useState(false);
+
+    /**
+     * Get the entities list
+     * @param {string} entity Type of entity
+     */
+    const getAllEntities = async (entity) => {
+        setLoading(true);
+        await fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${entity}`, {
+            method: "GET",
+        })
+            .then((res) => res.json())
+            .then(
+                (jsonData) =>
+                    entity === "heroes"
+                        ? setHeroes(jsonData)
+                        : entity === "monsters"
+                        ? setMonsters(jsonData)
+                        : ""
+                // : entity === "equipements"
+                // ? setEquipements(jsonData)
+                // : ""
+            )
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        getAllEntities("heroes");
+        getAllEntities("monsters");
+        // getAllEntitiess("equipements");
+    }, []);
+
+    if (loading) {
+        return (
+            <>
+                <p>Please wait a moment...</p>
+            </>
+        );
+    }
+
     return (
         <>
-            <ElementList getElement={props.getHeroes} elementType="heroes" />
-            <ElementList getElement={props.getMonsters} elementType="monsters" />
+            <ElementList getElement={heroes} elementType="heroes" />
+            <ElementList getElement={monsters} elementType="monsters" />
             {/* <ElementList getElement={props.getEquipements} elementType="equipements" /> */}
         </>
     );
