@@ -79,7 +79,6 @@ function GameSelection(props) {
     };
 
     const handlePackChoice = (packChoice) => {
-        console.log(packChoice);
         setPackChosen(packChoice);
     };
 
@@ -138,7 +137,14 @@ function GameSelection(props) {
                     <HeroCard hero={e} />
                 </div>
             ))}
-            <Link to="">
+            <Link
+                to="/play"
+                state={{
+                    heroChosen: heroChosen,
+                    packMonster: packChosen,
+                    difficultyChosen: difficulty,
+                }}
+            >
                 <button>Okay Let's go !</button>
             </Link>
         </>
