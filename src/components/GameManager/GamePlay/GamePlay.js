@@ -1,13 +1,28 @@
-import { useState } from "react";
-import { useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import "./GamePlay.css";
 
 function GamePlay(props) {
+    const navigate = useNavigate();
     const location = useLocation();
-    const { heroChosen, packMonster, difficultyChosen } = location.state;
-    const [hero, setHero] = useState(heroChosen);
-    const [monsters, setMonsters] = useState(packMonster);
+
+    /* ------------------------ State ------------------------  */
+    const [hero, setHero] = useState({});
+    const [monsters, setMonsters] = useState([]);
+    const [usedPA, setUsedPA] = useState(2);
+    const [toDisabled, setToDisabled] = useState(false);
     const [gameEnded, setGameEnded] = useState(false);
+    /* -------------------------------------------------------- */
+
+    /* -- Redirect if the user go directly to "/play" and not from "/start" -- */
+    useEffect(() => {
+        if (location.state === null) {
+            navigate("/start");
+        } else {
+            setHero(location.state.heroChosen);
+            setMonsters(location.state.packMonster);
+        }
+    }, [location.state, navigate]);
 
     /**
      * Return a randomized number
@@ -42,6 +57,11 @@ function GamePlay(props) {
         return Math.floor(damage);
     };
 
+    /**
+     * Return the counter attack if the entity choose the guard
+     * @param {Number} damageWaited
+     * @returns
+     */
     const riposte = (damageWaited) => {
         return damageWaited / 2;
     };
@@ -66,6 +86,11 @@ function GamePlay(props) {
     //     return damage;
     // };
 
+    /**
+     * Define the action of the monster randomly
+     * @param {Object} monster
+     * @returns
+     */
     const setMobAction = (monster) => {
         let action = "";
         let protectionValue = 0;
@@ -101,6 +126,11 @@ function GamePlay(props) {
         return { action: action, protectionValue: protectionValue };
     };
 
+    /**
+     * Set the protection value following the action of the player
+     * @param {string} selectedAction
+     * @returns
+     */
     const setHeroAction = (selectedAction) => {
         let action = "";
         let protectionValue = 0;
@@ -123,12 +153,20 @@ function GamePlay(props) {
         return { action: action, protectionValue: protectionValue };
     };
 
-    const onClickAction = (evt) => {
+    /**
+     * Set the logic of a play round
+     * @param {string} choix
+     * @param {int} paUsed
+     */
+    const onClickAction = (choix, paUsed = 0) => {
         const monsterChoice = setMobAction(monsters[0]);
-        const heroChoice = setHeroAction(evt);
+        const heroChoice = setHeroAction(choix);
         let degatHero = 0;
         let degatMonstre = 0;
 
+        /* --------------------------------------------------------------------- */
+        /* ------------ Set the player damage following his action  ------------ */
+        /* --------------------------------------------------------------------- */
         if (heroChoice.action === "atq") {
             degatHero = degatEquation(
                 monsters[0].stats.defense,
@@ -143,16 +181,26 @@ function GamePlay(props) {
             degatHero = degatEquation(
                 monsters[0].stats.defense,
                 hero.capacite.attaqueSpecial,
-                2,
+                paUsed,
                 hero.capacite.attaque,
                 hero.stats.attaque,
                 monsterChoice.protectionValue,
                 hero.stats.chance
             );
+
+            hero.stats.pa -= paUsed;
+            setUsedPA(2);
+
+            if (hero.stats.pa <= 0) {
+                setToDisabled(true);
+            }
         } else {
             degatHero = 0;
         }
 
+        /* ---------------------------------------------------------------------- */
+        /* ------------ Set the monster damage following its action  ------------ */
+        /* ---------------------------------------------------------------------- */
         if (monsterChoice.action === "atq") {
             degatMonstre = degatEquation(
                 hero.stats.defense,
@@ -179,6 +227,9 @@ function GamePlay(props) {
             degatMonstre = 0;
         }
 
+        /* ---------------------------------------------------------- */
+        /* ------------ Set the damage on each entity HP ------------*/
+        /* ---------------------------------------------------------- */
         hero.stats.pv -= degatMonstre;
         monsters[0].stats.pv -= degatHero;
 
@@ -195,6 +246,9 @@ function GamePlay(props) {
         console.log("Monstre PV : " + monsters[0].stats.pv);
         console.log("Monstre PA : " + monsters[0].stats.pa);
 
+        /* ---------------------------------------------------------------------- */
+        /* -- Check entity HP to either eliminate the monster or end the game -- */
+        /* ---------------------------------------------------------------------- */
         if (hero.stats.pv <= 0) {
             setGameEnded(true);
         }
@@ -207,18 +261,39 @@ function GamePlay(props) {
         }
     };
 
+    /**
+     * To get dynamically the used PA number from the input
+     * @param {*} evt
+     */
+    const handleUsedPAChange = (evt) => {
+        setUsedPA(evt.target.value);
+    };
+
     if (!gameEnded && monsters.length > 0) {
         return (
             <>
                 <button onClick={() => onClickAction("atq")}>Attaque</button>
-                <button onClick={() => onClickAction("atqSpe")}>Attaque Spécial</button>
+                <button onClick={() => onClickAction("atqSpe", usedPA)} disabled={toDisabled}>
+                    Attaque Spécial
+                </button>
+                <label for="paUsed">{usedPA}</label>
+                <input
+                    name="paUsed"
+                    type="range"
+                    min="2"
+                    max={hero.stats.pa}
+                    step="2"
+                    value={usedPA}
+                    onChange={handleUsedPAChange}
+                    disabled={toDisabled}
+                />
                 <button onClick={() => onClickAction("garde")}>Bouclier</button>
             </>
         );
     } else {
         return (
             <>
-                <p>Test</p>
+                <p>Merde !</p>
             </>
         );
     }
