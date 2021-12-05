@@ -4,20 +4,35 @@ import { Route, Routes } from "react-router";
 import { Link } from "react-router-dom";
 
 import DataManager from "./EntityManager/DataManager/DataManager";
-import GameTitle from "./GameManager/GameTitle/GameTitle";
+import GameSelection from "./GameManager/GameSelection/GameSelection";
 import ElementsDetails from "./EntityManager/ElementsDetails/ElementsDetails";
 import DeleteData from "./EntityManager/DeleteData/DeleteData";
 import CreateData from "./EntityManager/CreateData/CreateData";
 import ModificationData from "./EntityManager/ModificationData/ModificationData";
+import GamePlay from "./GameManager/GamePlay/GamePlay";
+
+const TitleScreen = () => {
+    return (
+        <>
+            <h1>Die suche von die hoffe mann</h1>
+        </>
+    );
+};
 
 function App() {
     return (
         <>
-            <Link to="/">Accueil</Link>
-            <Link to="/characters-builder">Ruler designer</Link>
+            <span>
+                |- <Link to="/">Accueil</Link> -|-
+                <Link to="/start">Start the game</Link> -|-
+                <Link to="/characters-builder">Ruler designer</Link> -|
+            </span>
 
             <Routes>
-                <Route path="/" element={<GameTitle />} />
+                <Route path="/" element={<TitleScreen />} />
+                <Route path="/start" element={<GameSelection />} />
+                <Route path="/play" element={<GamePlay />} />
+
                 <Route path="/characters-builder" element={<DataManager />} />
                 <Route path="/characters-builder/:element/create" element={<CreateData />} />
                 <Route path="/characters-builder/:element/:id" element={<ElementsDetails />} />

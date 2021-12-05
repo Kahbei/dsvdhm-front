@@ -13,6 +13,7 @@ const ElementList = (props) => {
                         margin: "1em 0.5em",
                         padding: "0.5em",
                     }}
+                    key={e._id}
                 >
                     <img
                         src={e.image}
