@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import HeroCard from "../HeroCard/HeroCard";
 import "./GamePlay.css";
 
 function GamePlay(props) {
@@ -9,8 +10,12 @@ function GamePlay(props) {
     /* ------------------------ State ------------------------  */
     const [hero, setHero] = useState({});
     const [monsters, setMonsters] = useState([]);
+    const [difficulty, setDifficulty] = useState("");
     const [usedPA, setUsedPA] = useState(2);
     const [toDisabled, setToDisabled] = useState(false);
+    const [infoGame, setInfoGame] = useState([]);
+    const [gameTurn, setGameTurn] = useState(1);
+    const [battleNB, setBattleNB] = useState(1);
     const [gameEnded, setGameEnded] = useState(false);
     /* -------------------------------------------------------- */
 
@@ -21,6 +26,7 @@ function GamePlay(props) {
         } else {
             setHero(location.state.heroChosen);
             setMonsters(location.state.packMonster);
+            setDifficulty(location.state.difficultyChosen);
         }
     }, [location.state, navigate]);
 
@@ -65,26 +71,6 @@ function GamePlay(props) {
     const riposte = (damageWaited) => {
         return damageWaited / 2;
     };
-
-    // const setDamage = (attaquant, defenseur, attaquantAction, defenseurProtection) => {
-    //     let paNb = 0;
-
-    //     if (attaquantAction === "atqSpe") {
-    //         paNb = 2;
-    //     }
-
-    //     const damage = degatEquation(
-    //         defenseur.stats.defense,
-    //         attaquant.stats.attaqueSpecial,
-    //         paNb,
-    //         attaquant.capacite.attaque,
-    //         attaquant.stats.attaque,
-    //         defenseurProtection,
-    //         attaquant.stats.chance
-    //     );
-
-    //     return damage;
-    // };
 
     /**
      * Define the action of the monster randomly
@@ -154,6 +140,52 @@ function GamePlay(props) {
     };
 
     /**
+     * Define the upgrade that the hero gain
+     * @param {Number} degatTaken
+     * @param {Number} paTaken
+     * @param {Number} battleNumber
+     */
+    const statsUpgradeAtEnd = (degatTaken, paTaken, battleNumber) => {
+        let heroStatsUp = hero.stats;
+
+        if (difficulty === "normal") {
+            if (degatTaken) {
+                heroStatsUp.pv += degatTaken / 2;
+            }
+
+            if (paTaken) {
+                heroStatsUp.pa += 2;
+            }
+
+            if (battleNumber === 2 || battleNumber === 4) {
+                for (const key in heroStatsUp) {
+                    if (
+                        Object.hasOwnProperty.call(heroStatsUp, key) &&
+                        key !== "pa" &&
+                        key !== "pv"
+                    ) {
+                        heroStatsUp[key] += 10;
+                    }
+                }
+            }
+        } else {
+            if (degatTaken) {
+                heroStatsUp.pv += degatTaken / 3;
+            }
+
+            if (paTaken) {
+                heroStatsUp.pa += 4;
+            }
+
+            for (const key in heroStatsUp) {
+                if (Object.hasOwnProperty.call(heroStatsUp, key) && key !== "pa" && key !== "pv") {
+                    heroStatsUp[key] += 5;
+                }
+            }
+        }
+    };
+
+    /**
      * Set the logic of a play round
      * @param {string} choix
      * @param {int} paUsed
@@ -163,7 +195,10 @@ function GamePlay(props) {
         const heroChoice = setHeroAction(choix);
         let degatHero = 0;
         let degatMonstre = 0;
+        let heroLostPV = 0;
+        let heroLostPA = 0;
 
+        setGameTurn(gameTurn + 1);
         /* --------------------------------------------------------------------- */
         /* ------------ Set the player damage following his action  ------------ */
         /* --------------------------------------------------------------------- */
@@ -189,7 +224,7 @@ function GamePlay(props) {
             );
 
             hero.stats.pa -= paUsed;
-            setUsedPA(2);
+            heroLostPA += paUsed;
 
             if (hero.stats.pa <= 0) {
                 setToDisabled(true);
@@ -234,10 +269,29 @@ function GamePlay(props) {
         monsters[0].stats.pv -= degatHero;
 
         if (monsterChoice.action === "garde") {
-            hero.stats.pv -= riposte(degatHero);
+            degatMonstre = riposte(degatHero);
+            hero.stats.pv -= degatMonstre;
         } else if (heroChoice.action === "garde") {
             monsters[0].stats.pv -= riposte(degatMonstre);
         }
+
+        heroLostPV += degatHero;
+
+        statsUpgradeAtEnd(heroLostPV, heroLostPA, battleNB);
+
+        if (hero.stats.pa === 0) {
+            setUsedPA(0);
+        } else {
+            setUsedPA(2);
+        }
+
+        setInfoGame("");
+        let infoGameTurn = [];
+        infoGameTurn[0] = `Tour n°${gameTurn} :`;
+        infoGameTurn[1] = `${monsters[0].name} va faire ${monsterChoice.action} ! `;
+        infoGameTurn[2] = `${hero.name} a perdu ${degatMonstre} points de vie ! `;
+        infoGameTurn[3] = `${hero.name} va faire ${heroChoice.action} ! `;
+        infoGameTurn[4] = `${monsters[0].name} a perdu ${degatHero} points de vie ! `;
 
         console.log(monsters);
         console.log("Mob nom : " + monsters[0].name);
@@ -253,12 +307,19 @@ function GamePlay(props) {
             setGameEnded(true);
         }
         if (monsters[0].stats.pv <= 0) {
+            infoGameTurn[5] = `${monsters[0].name} a été vaincu par ${hero.name} ! `;
+            setBattleNB(battleNB + 1);
+
             setMonsters(monsters.slice(1));
 
             if (monsters.length === 0) {
                 setGameEnded(true);
             }
+        } else {
+            infoGameTurn[5] = `Il reste à ${monsters[0].name} ${monsters[0].stats.pv} points de vie ! Tandis que pour le héro ${hero.name} il lui reste ${hero.stats.pv} points de vie ! `;
         }
+
+        setInfoGame(infoGameTurn);
     };
 
     /**
@@ -288,6 +349,14 @@ function GamePlay(props) {
                     disabled={toDisabled}
                 />
                 <button onClick={() => onClickAction("garde")}>Bouclier</button>
+
+                {infoGame.map((e) => (
+                    <p>{e}</p>
+                ))}
+
+                <HeroCard hero={hero} />
+                <p>VS</p>
+                <HeroCard hero={monsters[0]} />
             </>
         );
     } else {

@@ -78,6 +78,34 @@ function GameSelection(props) {
         setPackMonster(allPack);
     };
 
+    const monsterStatsDifficulty = () => {
+        if (difficulty === "normal") {
+            let bossMonsterStats = packChosen[4].stats;
+
+            for (const key in bossMonsterStats) {
+                if (Object.hasOwnProperty.call(bossMonsterStats, key) && key !== "pa") {
+                    bossMonsterStats[key] += 25;
+                }
+            }
+        } else {
+            for (let i = 0; i < packChosen.length; i++) {
+                let monsterStats = packChosen[i].stats;
+
+                for (const key in monsterStats) {
+                    if (Object.hasOwnProperty.call(monsterStats, key) && key !== "pa") {
+                        if (i === packChosen.length - 1) {
+                            monsterStats[key] += 30;
+                        } else if (i >= packChosen.length - 3) {
+                            monsterStats[key] += 15;
+                        } else {
+                            monsterStats[key] += 5;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     const handlePackChoice = (packChoice) => {
         setPackChosen(packChoice);
     };
@@ -117,6 +145,7 @@ function GameSelection(props) {
 
     if (!packChosen) {
         let packNumber = 1;
+
         return (
             <>
                 {packMonster.map((e) => (
@@ -127,6 +156,8 @@ function GameSelection(props) {
             </>
         );
     }
+
+    monsterStatsDifficulty();
 
     return (
         <>

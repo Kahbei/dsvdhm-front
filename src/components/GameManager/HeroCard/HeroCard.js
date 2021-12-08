@@ -5,7 +5,9 @@ function HeroCard(props) {
         <div>
             <img src={props.hero.image} alt={props.hero.name} />
             <p>Name: {props.hero.name}</p>
-            <p>Point de vie : {props.hero.stats.pv} / 20</p>
+            <p>
+                Point de vie : {props.hero.stats.pv} / {props.hero.stats.pv}
+            </p>
             <p>Point de l'Ankou: {props.hero.stats.pa} </p>
             <p>Attaque: {props.hero.stats.attaque}</p>
             <p>Défense: {props.hero.stats.defense}</p>
