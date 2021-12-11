@@ -34,8 +34,13 @@ function CUForm(props) {
                     type="number"
                     min="0"
                     max="10"
+                    step="2"
                     name="statsPA"
-                    defaultValue={entity.stats.pa}
+                    defaultValue={
+                        entity.stats.pa !== 0 && entity.stats.pa % 2 !== 0
+                            ? entity.stats.pa + 1
+                            : entity.stats.pa
+                    }
                     required
                 />
 
@@ -116,7 +121,7 @@ function CUForm(props) {
             <input type="number" min="100" max="999" name="statsPV" required />
 
             <label htmlFor="statsPA">Points de l'Ankou : </label>
-            <input type="number" min="0" max="10" name="statsPA" required />
+            <input type="number" min="0" max="10" step="2" name="statsPA" required />
 
             <label htmlFor="statsAttaque">Attaque : </label>
             <input type="number" min="10" max="99" name="statsAttaque" required />

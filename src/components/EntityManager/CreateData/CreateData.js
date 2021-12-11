@@ -30,16 +30,16 @@ function CreateData() {
             name: evt.target.entityName.value,
             image: evt.target.entityImg.value,
             stats: {
-                pv: evt.target.statsPV.value,
-                pa: evt.target.statsPA.value,
-                attaque: evt.target.statsAttaque.value,
-                defense: evt.target.statsDefense.value,
-                chance: evt.target.statsChance.value,
+                pv: parseInt(evt.target.statsPV.value),
+                pa: parseInt(evt.target.statsPA.value),
+                attaque: parseInt(evt.target.statsAttaque.value),
+                defense: parseInt(evt.target.statsDefense.value),
+                chance: parseInt(evt.target.statsChance.value),
             },
             capacite: {
-                attaque: evt.target.capaciteAttaque.value,
-                attaqueSpecial: evt.target.capaciteAttaqueSpecial.value,
-                protection: evt.target.capaciteProtection.value,
+                attaque: parseInt(evt.target.capaciteAttaque.value),
+                attaqueSpecial: parseInt(evt.target.capaciteAttaqueSpecial.value),
+                protection: parseInt(evt.target.capaciteProtection.value),
             },
         };
         createEntity(element, createForm);
