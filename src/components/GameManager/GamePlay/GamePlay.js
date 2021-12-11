@@ -15,8 +15,9 @@ function GamePlay(props) {
     const [toDisabled, setToDisabled] = useState(false);
     const [infoGame, setInfoGame] = useState([]);
     const [gameTurn, setGameTurn] = useState(1);
-    const [battleNB, setBattleNB] = useState(1);
+    const [battleNB, setBattleNB] = useState(0);
     const [gameEnded, setGameEnded] = useState(false);
+    const [loading, setLoading] = useState(true);
     /* -------------------------------------------------------- */
 
     /* -- Redirect if the user go directly to "/play" and not from "/start" -- */
@@ -27,6 +28,7 @@ function GamePlay(props) {
             setHero(location.state.heroChosen);
             setMonsters(location.state.packMonster);
             setDifficulty(location.state.difficultyChosen);
+            setLoading(false);
         }
     }, [location.state, navigate]);
 
@@ -37,12 +39,11 @@ function GamePlay(props) {
      * @returns {Number}
      */
     const getRndNum = (num, zero) => {
-        console.log(zero ? true : false);
         return zero ? Math.floor(Math.random() * num) + zero : Math.floor(Math.random() * num);
     };
 
     /**
-     *
+     * Use the damage formule
      * @param {Number} def Defense of the ennemy
      * @param {Number} basePA Basic value of the special attak capacity
      * @param {Number} usedPA PA number used, minimum 2 if used
@@ -140,22 +141,24 @@ function GamePlay(props) {
     };
 
     /**
-     * Define the upgrade that the hero gain
+     * Define the upgrade that the hero gain after the end of a fight depending of the difficulty mode
      * @param {Number} degatTaken
      * @param {Number} paTaken
      * @param {Number} battleNumber
      */
     const statsUpgradeAtEnd = (degatTaken, paTaken, battleNumber) => {
         let heroStatsUp = hero.stats;
+        console.log("OUI");
+        console.log(degatTaken);
+        console.log(paTaken);
 
         if (difficulty === "normal") {
             if (degatTaken) {
+                console.log("oui2");
                 heroStatsUp.pv += degatTaken / 2;
             }
 
-            if (paTaken) {
-                heroStatsUp.pa += 2;
-            }
+            heroStatsUp.pa += 2;
 
             if (battleNumber === 2 || battleNumber === 4) {
                 for (const key in heroStatsUp) {
@@ -173,9 +176,7 @@ function GamePlay(props) {
                 heroStatsUp.pv += degatTaken / 3;
             }
 
-            if (paTaken) {
-                heroStatsUp.pa += 4;
-            }
+            heroStatsUp.pa += 4;
 
             for (const key in heroStatsUp) {
                 if (Object.hasOwnProperty.call(heroStatsUp, key) && key !== "pa" && key !== "pv") {
@@ -225,10 +226,6 @@ function GamePlay(props) {
 
             hero.stats.pa -= paUsed;
             heroLostPA += paUsed;
-
-            if (hero.stats.pa <= 0) {
-                setToDisabled(true);
-            }
         } else {
             degatHero = 0;
         }
@@ -277,12 +274,12 @@ function GamePlay(props) {
 
         heroLostPV += degatHero;
 
-        statsUpgradeAtEnd(heroLostPV, heroLostPA, battleNB);
-
-        if (hero.stats.pa === 0) {
+        if (hero.stats.pa <= 0) {
             setUsedPA(0);
+            setToDisabled(true);
         } else {
             setUsedPA(2);
+            setToDisabled(false);
         }
 
         setInfoGame("");
@@ -293,33 +290,33 @@ function GamePlay(props) {
         infoGameTurn[3] = `${hero.name} va faire ${heroChoice.action} ! `;
         infoGameTurn[4] = `${monsters[0].name} a perdu ${degatHero} points de vie ! `;
 
-        console.log(monsters);
-        console.log("Mob nom : " + monsters[0].name);
-        console.log("Mob choix : " + monsterChoice.action);
-        console.log("Hero PV : " + hero.stats.pv);
-        console.log("Monstre PV : " + monsters[0].stats.pv);
-        console.log("Monstre PA : " + monsters[0].stats.pa);
-
         /* ---------------------------------------------------------------------- */
         /* -- Check entity HP to either eliminate the monster or end the game -- */
         /* ---------------------------------------------------------------------- */
         if (hero.stats.pv <= 0) {
+            infoGameTurn[6] = `Oh non ! Le héro ${hero.name} a perdu, l'espoir vient de partir !`;
+
+            setInfoGame(infoGameTurn);
             setGameEnded(true);
-        }
-        if (monsters[0].stats.pv <= 0) {
-            infoGameTurn[5] = `${monsters[0].name} a été vaincu par ${hero.name} ! `;
-            setBattleNB(battleNB + 1);
-
-            setMonsters(monsters.slice(1));
-
-            if (monsters.length === 0) {
-                setGameEnded(true);
-            }
         } else {
-            infoGameTurn[5] = `Il reste à ${monsters[0].name} ${monsters[0].stats.pv} points de vie ! Tandis que pour le héro ${hero.name} il lui reste ${hero.stats.pv} points de vie ! `;
-        }
+            if (monsters[0].stats.pv <= 0) {
+                infoGameTurn[5] = `${monsters[0].name} a été vaincu par ${hero.name} ! `;
 
-        setInfoGame(infoGameTurn);
+                setBattleNB(battleNB + 1);
+                statsUpgradeAtEnd(heroLostPV, heroLostPA, battleNB);
+                setMonsters(monsters.slice(1));
+
+                if (monsters.length <= 1 && monsters[0].stats.pv <= 0) {
+                    infoGameTurn[6] = `Bravo héros ${hero.name} ! Vous avez terrassé tout les monstres !`;
+                    setGameEnded(true);
+                }
+            } else {
+                infoGameTurn[5] = `Il reste à ${monsters[0].name} ${monsters[0].stats.pv} points de vie ! Tandis que pour le héro ${hero.name} il lui reste ${hero.stats.pv} points de vie ! `;
+                setInfoGame(infoGameTurn);
+            }
+
+            setInfoGame(infoGameTurn);
+        }
     };
 
     /**
@@ -330,14 +327,22 @@ function GamePlay(props) {
         setUsedPA(evt.target.value);
     };
 
-    if (!gameEnded && monsters.length > 0) {
+    if (loading) {
+        return (
+            <>
+                <p>Please wait a moment...</p>
+            </>
+        );
+    }
+
+    if (!gameEnded) {
         return (
             <>
                 <button onClick={() => onClickAction("atq")}>Attaque</button>
                 <button onClick={() => onClickAction("atqSpe", usedPA)} disabled={toDisabled}>
                     Attaque Spécial
                 </button>
-                <label for="paUsed">{usedPA}</label>
+                <label htmlFor="paUsed">{usedPA}</label>
                 <input
                     name="paUsed"
                     type="range"
@@ -362,7 +367,7 @@ function GamePlay(props) {
     } else {
         return (
             <>
-                <p>Merde !</p>
+                <p>{infoGame[6]}</p>
             </>
         );
     }

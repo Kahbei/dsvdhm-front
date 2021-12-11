@@ -21,7 +21,7 @@ Avant de pouvoir lancer l'application, vous allez devoir un fichier **.env** ave
 
 `http://localhost:3000` devant être remplacé par l'adresse où va s'exécuter le back-end
 
-Pour lancer l'application, il ne faudra plus que faire : `yarn start`
+Pour lancer l'application, il ne faudra plus que faire **après avoir lancé le back** : `yarn start`
 
 
 ### ***Contributeur fondateur***
