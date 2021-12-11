@@ -148,13 +148,9 @@ function GamePlay(props) {
      */
     const statsUpgradeAtEnd = (degatTaken, paTaken, battleNumber) => {
         let heroStatsUp = hero.stats;
-        console.log("OUI");
-        console.log(degatTaken);
-        console.log(paTaken);
 
         if (difficulty === "normal") {
             if (degatTaken) {
-                console.log("oui2");
                 heroStatsUp.pv += degatTaken / 2;
             }
 
