@@ -1,21 +1,14 @@
 import "./GameTitle.css";
-
+import templier from "./TemplierMainPage.png";
+import { Link } from "react-router-dom";
 function GameTitle(props) {
   return (
     <div class="gitadd">
       <h1 class="Titre">Die Suche von die Hoff Mann</h1>
-      <img
-        id="templier"
-        src="https://www.cdiscount.com/pdt2/8/7/4/1/550x550/his2009948975874/rw/sticker-templier-en-priere.jpg"
-        alt="Templier qui prie"
-      />
+      <img id="templier" src={templier} alt="Templier qui prie" />
       <div class="bouton">
-        <a href="#" id="BoutonStart">
-          Start
-        </a>
-        <a href="#" id="BontonRuledesignertext">
-          Rule designer
-        </a>
+        <Link to="/start">Start the game</Link>
+        <Link to="/characters-builder">Ruler designer</Link>
       </div>
     </div>
   );

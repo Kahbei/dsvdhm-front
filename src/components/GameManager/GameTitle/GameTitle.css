@@ -30,3 +30,7 @@ body {
   flex-direction: column;
   align-items: center;
 }
+.bouton a:hover {
+  background-color: white;
+  color: #000;
+}

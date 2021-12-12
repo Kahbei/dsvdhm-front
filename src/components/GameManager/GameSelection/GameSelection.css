@@ -1,0 +1,44 @@
+body {
+  background-color: black;
+  width: 100%;
+}
+.bouton {
+  display: flex;
+}
+button {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  width: 8em;
+  font-size: 3em;
+  color: white;
+  text-decoration: none;
+  border: cornsilk solid;
+  margin: 2em;
+  padding: 1rem;
+  text-align: center;
+  background-color: black;
+}
+button:hover {
+  color: black;
+  background-color: white;
+}
+#commentaire {
+  display: flex;
+  color: white;
+  margin-left: 1em;
+}
+.DifficulteTexte {
+  flex-direction: row;
+  display: flex;
+  width: 100%;
+}
+#ImageDifficulte {
+  max-width: 30vw;
+}
+.MenuDifficulte {
+  display: flex;
+  flex-direction: row;
+}
