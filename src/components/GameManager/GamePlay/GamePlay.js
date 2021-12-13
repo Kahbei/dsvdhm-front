@@ -351,11 +351,11 @@ function GamePlay(props) {
   if (!gameEnded) {
     return (
       <>
-        <button class="BoutonAction" onClick={() => onClickAction("atq")}>
+        <button className="BoutonAction" onClick={() => onClickAction("atq")}>
           Attaque
         </button>
         <button
-          class="BoutonAction"
+          className="BoutonAction"
           onClick={() => onClickAction("atqSpe", usedPA)}
           disabled={toDisabled}
         >
@@ -371,9 +371,9 @@ function GamePlay(props) {
           value={usedPA}
           onChange={handleUsedPAChange}
           disabled={toDisabled}
-          class="BoutonAction"
+          className="BoutonAction"
         />
-        <button class="BoutonAction" onClick={() => onClickAction("garde")}>
+        <button className="BoutonAction" onClick={() => onClickAction("garde")}>
           Bouclier
         </button>
 

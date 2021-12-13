@@ -63,33 +63,45 @@ button:hover {
 }
 .heroversus {
   display: flex;
-  flex-direction: row;
-  flex-wrap: inherit;
+  gap: 4em;
+  flex-wrap: wrap;
+  margin-top: 32px;
 }
 
 .heropack {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 100px;
+  margin-top: 4em;
+  justify-content: center;
 }
 .monstrealigne {
   display: flex;
-  flex-direction: column;
-  justify-content: end;
+  flex-direction: row;
+  justify-content: center;
 }
 #versustexte {
   font-size: 5em;
-  display: flex;
-  flex-direction: column;
 }
-#buttonokletsgo a {
+#buttonokletsgo {
   width: 8em;
   font-size: 3em;
   color: white;
-  text-decoration: none;
   border: cornsilk solid;
   margin: 2em;
   padding: 1rem;
   text-align: center;
   background-color: black;
+  text-decoration: none;
+  font-family: fantasy;
+}
+.packmonstre {
+  display: flex;
+  flex-wrap: wrap;
+  justify-self: center;
+  gap: 3em;
+}
+.jesaispas {
+  display: flex;
   justify-content: center;
 }

@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 const ElementList = (props) => {
   return (
     <div className={`List-${props.elementType}`}>
-      <div class="listemob">
+      <div className="listemob">
         {props.getElement.map((e) => (
           <div key={e._id}>
-            <div class="edition">
+            <div className="edition">
               <img
                 src={e.image}
                 alt={e.name}

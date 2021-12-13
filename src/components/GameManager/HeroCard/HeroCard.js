@@ -2,8 +2,8 @@ import "./HeroCard.css";
 
 function HeroCard(props) {
   return (
-    <div class="cartehero">
-      <div class="stathero">
+    <div className="cartehero">
+      <div className="stathero">
         <img src={props.hero.image} alt={props.hero.name} />
         <p>Name: {props.hero.name}</p>
         <p>Point de vie : {props.hero.stats.pv}</p>

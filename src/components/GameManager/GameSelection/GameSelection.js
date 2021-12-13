@@ -17,8 +17,8 @@ const DifficultyChoice = (props) => {
   }
   return (
     <>
-      <div class="MenuDifficulte">
-        <div class="boutton">
+      <div className="MenuDifficulte">
+        <div className="boutton">
           <button
             type="button"
             onClick={handleClick}
@@ -48,7 +48,7 @@ const DifficultyChoice = (props) => {
             Hoffe Mann
           </button>
         </div>
-        <div class="DifficulteTexte">
+        <div className="DifficulteTexte">
           <img
             id="ImageDifficulte"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm223esmU7bRbMer2Nr8-Zg7GOpW7oF1HtSaYoJQmwdIQ-bBSw7HrWUGbr4wy4GVDTbf4&usqp=CAU"
@@ -175,11 +175,13 @@ function GameSelection(props) {
   if (!heroChosen) {
     return (
       <>
-        {heroes.map((e) => (
-          <div class="heropack" key={e._id} onClick={() => handleHeroChoice(e)}>
-            <HeroCard hero={e} />
-          </div>
-        ))}
+        <div className="heropack">
+          {heroes.map((e) => (
+            <div key={e._id} onClick={() => handleHeroChoice(e)}>
+              <HeroCard hero={e} />
+            </div>
+          ))}
+        </div>
       </>
     );
   }
@@ -188,10 +190,10 @@ function GameSelection(props) {
 
     return (
       <>
-        <div class="monstrealigne">
+        <div className="monstrealigne">
           {packMonster.map((e) => (
             <div
-              class="packset"
+              className="packset"
               key={"pack-" + packNumber}
               onClick={() => handlePackChoice(e)}
             >
@@ -207,25 +209,30 @@ function GameSelection(props) {
 
   return (
     <>
-      <div class="heroversus">
+      <div className="heroversus">
         <HeroCard hero={heroChosen} />
         <p id="versustexte">VERSUS</p>
-        {packChosen.map((e, index) => (
-          <div key={index + "-" + e._id}>
-            <HeroCard hero={e} />
-          </div>
-        ))}
+        <div className="packmonstre">
+          {packChosen.map((e, index) => (
+            <div key={index + "-" + e._id}>
+              <HeroCard hero={e} />
+            </div>
+          ))}
+        </div>
       </div>
-      <Link
-        to="/play"
-        state={{
-          heroChosen: heroChosen,
-          packMonster: packChosen,
-          difficultyChosen: difficulty,
-        }}
-      >
-        <button id="buttonokletsgo">Okay Let's go !</button>
-      </Link>
+      <div className="jesaispas">
+        <Link
+          id="buttonokletsgo"
+          to="/play"
+          state={{
+            heroChosen: heroChosen,
+            packMonster: packChosen,
+            difficultyChosen: difficulty,
+          }}
+        >
+          Okay Let's go !
+        </Link>
+      </div>
     </>
   );
 }
