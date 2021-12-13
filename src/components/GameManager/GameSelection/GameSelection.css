@@ -1,13 +1,10 @@
 body {
   background-color: black;
+  color: white;
   width: 100%;
 }
 .bouton {
   display: flex;
-}
-button {
-  display: flex;
-  justify-content: center;
 }
 
 button {
@@ -20,6 +17,8 @@ button {
   padding: 1rem;
   text-align: center;
   background-color: black;
+  display: flex;
+  justify-content: center;
 }
 button:hover {
   color: black;
@@ -41,4 +40,56 @@ button:hover {
 .MenuDifficulte {
   display: flex;
   flex-direction: row;
+}
+.packset {
+  width: 8em;
+  font-size: 3em;
+  color: white;
+  text-decoration: none;
+  border: cornsilk solid;
+  margin: 2em;
+  padding: 1rem;
+  text-align: center;
+  background-color: black;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.packset:hover {
+  color: #000;
+  background-color: white;
+}
+.heroversus {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: inherit;
+}
+
+.heropack {
+  display: flex;
+  flex-direction: column;
+}
+.monstrealigne {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+#versustexte {
+  font-size: 5em;
+  display: flex;
+  flex-direction: column;
+}
+#buttonokletsgo a {
+  width: 8em;
+  font-size: 3em;
+  color: white;
+  text-decoration: none;
+  border: cornsilk solid;
+  margin: 2em;
+  padding: 1rem;
+  text-align: center;
+  background-color: black;
+  justify-content: center;
 }
