@@ -11,7 +11,10 @@ const DifficultyChoice = (props) => {
       props.setStateDifficulty("hoffe");
     }
   };
-
+  function resume(texte, url) {
+    document.getElementById("commentaire").innerHTML = texte;
+    document.getElementById("ImageDifficulte").src = url;
+  }
   return (
     <>
       <div class="MenuDifficulte">
@@ -20,8 +23,8 @@ const DifficultyChoice = (props) => {
             type="button"
             onClick={handleClick}
             onMouseOver={() =>
-              Resume(
-                "TOTO",
+              resume(
+                "L'espoir de réussir est grand ici les monstres ne sont d'un niveau normal parfait pour les nouveaux aventuriers a vous de faire vos preuves ! ",
                 "https://i.pinimg.com/originals/1e/8d/32/1e8d32967db0f4fd5eaad1d6add34056.jpg"
               )
             }
@@ -34,8 +37,8 @@ const DifficultyChoice = (props) => {
             type="button"
             onClick={handleClick}
             onMouseOver={() =>
-              Resume(
-                "TATA",
+              resume(
+                "La difficulté type dark soul les developeurs n'ont pas réussit a gagné dans ce mode de jeu mais en théories c'est faisable ! ",
                 "https://i.ytimg.com/vi/skV-q5KjrUA/maxresdefault.jpg"
               )
             }
@@ -59,153 +62,160 @@ const DifficultyChoice = (props) => {
     </>
   );
 };
-function Resume(texte, url) {
-  document.getElementById("commentaire").innerHTML = texte;
-  document.getElementById("ImageDifficulte").src = url;
-}
 
 function GameSelection(props) {
-    /* --- State of player choice --- */
-    const [difficulty, setDifficulty] = useState();
-    const [heroChosen, setHeroChosen] = useState();
-    const [packChosen, setPackChosen] = useState();
+  /* --- State of player choice --- */
+  const [difficulty, setDifficulty] = useState();
+  const [heroChosen, setHeroChosen] = useState();
+  const [packChosen, setPackChosen] = useState();
 
-    /* --- State of entities list --- */
-    const [heroes, setHeroes] = useState([]);
-    const [monsters, setMonsters] = useState([]);
+  /* --- State of entities list --- */
+  const [heroes, setHeroes] = useState([]);
+  const [monsters, setMonsters] = useState([]);
 
-    const [packMonster, setPackMonster] = useState();
-    const [loading, setLoading] = useState(false);
+  const [packMonster, setPackMonster] = useState();
+  const [loading, setLoading] = useState(false);
 
-    /**
-     * Get the entities list
-     * @param {string} entity Type of entity
-     */
-    const getAllEntities = (entity) => {
-        setLoading(true);
-        fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${entity}`, {
-            method: "GET",
-        })
-            .then((res) => res.json())
-            .then((jsonData) =>
-                entity === "heroes"
-                    ? setHeroes(jsonData)
-                    : entity === "monsters"
-                    ? setMonsters(jsonData)
-                    : ""
-            )
-            .finally(() => setLoading(false));
-    };
+  /**
+   * Get the entities list
+   * @param {string} entity Type of entity
+   */
+  const getAllEntities = (entity) => {
+    setLoading(true);
+    fetch(`${process.env.REACT_APP_API_BASEURL}/entities/${entity}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((jsonData) =>
+        entity === "heroes"
+          ? setHeroes(jsonData)
+          : entity === "monsters"
+          ? setMonsters(jsonData)
+          : ""
+      )
+      .finally(() => setLoading(false));
+  };
 
-    const handleHeroChoice = (heroChoice) => {
-        allMonsterPack();
-        setHeroChosen(heroChoice);
-    };
+  const handleHeroChoice = (heroChoice) => {
+    allMonsterPack();
+    setHeroChosen(heroChoice);
+  };
 
-    const allMonsterPack = () => {
-        let allPack = [];
+  const allMonsterPack = () => {
+    let allPack = [];
 
-        for (let j = 0; j < 4; j++) {
-            let setOnePack = [];
+    for (let j = 0; j < 4; j++) {
+      let setOnePack = [];
 
-            for (let i = 0; i < 5; i++) {
-                const rndPick = Math.floor(Math.random() * monsters.length);
-                setOnePack.push(monsters[rndPick]);
-            }
-            allPack.push(setOnePack);
-        }
-
-        setPackMonster(allPack);
-    };
-
-    const monsterStatsDifficulty = () => {
-        if (difficulty === "normal") {
-            let bossMonsterStats = packChosen[4].stats;
-
-            for (const key in bossMonsterStats) {
-                if (Object.hasOwnProperty.call(bossMonsterStats, key) && key !== "pa") {
-                    bossMonsterStats[key] += 25;
-                }
-            }
-        } else {
-            for (let i = 0; i < packChosen.length; i++) {
-                let monsterStats = packChosen[i].stats;
-
-                for (const key in monsterStats) {
-                    if (Object.hasOwnProperty.call(monsterStats, key) && key !== "pa") {
-                        if (i === packChosen.length - 1) {
-                            monsterStats[key] += 30;
-                        } else if (i >= packChosen.length - 3) {
-                            monsterStats[key] += 15;
-                        } else {
-                            monsterStats[key] += 5;
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    const handlePackChoice = (packChoice) => {
-        setPackChosen(packChoice);
-    };
-
-    useEffect(() => {
-        getAllEntities("heroes");
-        getAllEntities("monsters");
-    }, []);
-
-    if (loading) {
-        return (
-            <>
-                <p>Please wait a moment...</p>
-            </>
-        );
+      for (let i = 0; i < 5; i++) {
+        const rndPick = Math.floor(Math.random() * monsters.length);
+        setOnePack.push(monsters[rndPick]);
+      }
+      allPack.push(setOnePack);
     }
 
     setPackMonster(allPack);
+  };
+
+  const monsterStatsDifficulty = () => {
+    if (difficulty === "normal") {
+      let bossMonsterStats = packChosen[4].stats;
+
+      for (const key in bossMonsterStats) {
+        if (Object.hasOwnProperty.call(bossMonsterStats, key) && key !== "pa") {
+          bossMonsterStats[key] += 25;
+        }
+      }
+    } else {
+      for (let i = 0; i < packChosen.length; i++) {
+        let monsterStats = packChosen[i].stats;
+
+        for (const key in monsterStats) {
+          if (Object.hasOwnProperty.call(monsterStats, key) && key !== "pa") {
+            if (i === packChosen.length - 1) {
+              monsterStats[key] += 30;
+            } else if (i >= packChosen.length - 3) {
+              monsterStats[key] += 15;
+            } else {
+              monsterStats[key] += 5;
+            }
+          }
+        }
+      }
+    }
   };
 
   const handlePackChoice = (packChoice) => {
     setPackChosen(packChoice);
   };
 
-    if (!packChosen) {
-        let packNumber = 1;
+  useEffect(() => {
+    getAllEntities("heroes");
+    getAllEntities("monsters");
+  }, []);
 
-        return (
-            <>
-                {packMonster.map((e) => (
-                    <div key={"pack-" + packNumber} onClick={() => handlePackChoice(e)}>
-                        Pack Monster {packNumber++}
-                    </div>
-                ))}
-            </>
-        );
-    }
-
-    monsterStatsDifficulty();
-
+  if (loading) {
     return (
       <>
-        {packMonster.map((e) => (
-          <div key={"pack-" + packNumber} onClick={() => handlePackChoice(e)}>
-            Pack Monster {packNumber++}
+        <p>Please wait a moment...</p>
+      </>
+    );
+  }
+
+  if (!difficulty) {
+    return (
+      <>
+        <DifficultyChoice
+          setStateDifficulty={setDifficulty}
+          stateDifficulty={difficulty}
+        />
+      </>
+    );
+  }
+  if (!heroChosen) {
+    return (
+      <>
+        {heroes.map((e) => (
+          <div class="heropack" key={e._id} onClick={() => handleHeroChoice(e)}>
+            <HeroCard hero={e} />
           </div>
         ))}
       </>
     );
   }
+  if (!packChosen) {
+    let packNumber = 1;
+
+    return (
+      <>
+        <div class="monstrealigne">
+          {packMonster.map((e) => (
+            <div
+              class="packset"
+              key={"pack-" + packNumber}
+              onClick={() => handlePackChoice(e)}
+            >
+              Pack Monster {packNumber++}
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  }
+
+  monsterStatsDifficulty();
 
   return (
     <>
-      <HeroCard hero={heroChosen} />
-      <p>VERSUS</p>
-      {packChosen.map((e, index) => (
-        <div key={index + "-" + e._id}>
-          <HeroCard hero={e} />
-        </div>
-      ))}
+      <div class="heroversus">
+        <HeroCard hero={heroChosen} />
+        <p id="versustexte">VERSUS</p>
+        {packChosen.map((e, index) => (
+          <div key={index + "-" + e._id}>
+            <HeroCard hero={e} />
+          </div>
+        ))}
+      </div>
       <Link
         to="/play"
         state={{
@@ -214,7 +224,7 @@ function GameSelection(props) {
           difficultyChosen: difficulty,
         }}
       >
-        <button>Okay Let's go !</button>
+        <button id="buttonokletsgo">Okay Let's go !</button>
       </Link>
     </>
   );

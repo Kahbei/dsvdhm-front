@@ -9,6 +9,9 @@ function GameTitle(props) {
       <div class="bouton">
         <Link to="/start">Start the game</Link>
         <Link to="/characters-builder">Ruler designer</Link>
+        <audio id="son1">
+          <source src="game-menu-select-sound-effect.mp3" type="audio/mp3" />
+        </audio>
       </div>
     </div>
   );

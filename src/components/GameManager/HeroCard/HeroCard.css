@@ -1,0 +1,12 @@
+.stathero {
+  width: 5em;
+  font-size: 2em;
+  color: white;
+  text-decoration: none;
+  border: cornsilk solid;
+  margin: 2em;
+  text-align: center;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}

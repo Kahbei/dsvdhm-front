@@ -1,0 +1,12 @@
+.cartehero {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 10em;
+}
+.BoutonAction {
+  display: flex;
+  flex-direction: column;
+  -ms-flex-align: end;
+  align-items: center;
+}

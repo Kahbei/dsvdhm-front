@@ -1,0 +1,10 @@
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 10vw;
+  justify-content: center;
+}
+#Creation {
+  display: flex;
+  flex-direction: row;
+}

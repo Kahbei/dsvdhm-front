@@ -1,0 +1,61 @@
+p {
+  color: white;
+  font-family: fantasy;
+}
+
+.edition {
+  width: 5em;
+  font-size: 2em;
+  color: white;
+  text-decoration: none;
+  border: cornsilk solid;
+  margin: 2em;
+  text-align: center;
+  padding: 1rem;
+}
+#boutonedition a {
+  color: white;
+  text-decoration: none;
+  flex-direction: column;
+  border: solid white;
+}
+#boutonedition a:hover {
+  color: black;
+  background-color: white;
+}
+#boutonedition {
+  display: flex;
+  flex-direction: column;
+}
+.listemob {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.List-monsters,
+.List-heroes {
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+}
+
+.Create-monsters,
+.Create-heroes {
+  text-decoration: none;
+  width: 50%;
+  border: solid white;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background-color: white;
+  align-self: center;
+}
+.Create-heroes a,
+.Create-monsters a {
+  color: black;
+  text-decoration: none;
+  font-size: 2em;
+  padding: 10px;
+  font-family: fantasy;
+}
